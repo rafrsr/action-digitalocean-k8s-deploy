@@ -1,0 +1,45 @@
+name: 'Deploy to DOKS'
+description: 'Deploy image from Digital Ocean Repository to DOKS using k8s manifests'
+inputs:
+  manifests:
+    description: 'Where are located manifest files to deploy'
+    required: true
+  cluser:
+    description: 'Name of the cluster in Digital Ocean'
+    required: true
+  tag:
+    description: 'Image tag'
+    required: true
+    default: $(echo $GITHUB_SHA | head -c7)
+  accessToken:
+    description: 'Digital Ocean API Access Token'
+    required: true
+  repository:
+    description: 'Digital Ocean Repository'
+    required: true    
+runs:
+  using: "composite"
+  steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ inputs.accessToken }}
+
+      - name: Prepare manifests
+        uses: Slidem/inplace-envsubst-action@v1.0.0
+        env:
+          IMAGE: registry.digitalocean.com/${{ inputs.repository }}:${{ inputs.tag }}
+        with:
+          working-directory: ${{ inputs.manifests }}
+          fail-on-missing-variables: "false"
+          search_input: |
+            {
+              "patterns": [".+.yaml", ".+.yml"],
+              "depth": 2
+            }
+
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ inputs.cluster }}
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/${{ inputs.manifests }}
