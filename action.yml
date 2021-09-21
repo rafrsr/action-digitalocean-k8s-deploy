@@ -4,7 +4,7 @@ inputs:
   manifests:
     description: 'Where are located manifest files to deploy'
     required: true
-  cluser:
+  cluster:
     description: 'Name of the cluster in Digital Ocean'
     required: true
   tag:
