@@ -7,16 +7,12 @@ inputs:
   cluster:
     description: 'Name of the cluster in Digital Ocean'
     required: true
-  tag:
-    description: 'Image tag'
-    required: true
-    default: $(echo $GITHUB_SHA | head -c7)
   accessToken:
     description: 'Digital Ocean API Access Token'
     required: true
   repository:
     description: 'Digital Ocean Repository'
-    required: false
+    required: true
 runs:
   using: "composite"
   steps:
@@ -25,11 +21,13 @@ runs:
         with:
           token: ${{ inputs.accessToken }}
 
+      - uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+
       - name: Prepare manifests
         uses: Slidem/inplace-envsubst-action@v1.2.2
         env:
-          IMAGE: registry.digitalocean.com/${{ inputs.repository }}
-          TAG: ${{ inputs.tag }}
+          IMAGE: registry.digitalocean.com/${{ inputs.repository }}:${{ steps.short-sha.outputs.sha }}
         with:
           working-directory: ${{ inputs.manifests }}
           fail_on_missing_variables: false
