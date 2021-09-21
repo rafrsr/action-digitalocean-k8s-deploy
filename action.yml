@@ -16,7 +16,7 @@ inputs:
     required: true
   repository:
     description: 'Digital Ocean Repository'
-    required: true    
+    required: false
 runs:
   using: "composite"
   steps:
