@@ -31,7 +31,7 @@ runs:
           IMAGE: registry.digitalocean.com/${{ inputs.repository }}:${{ inputs.tag }}
         with:
           working-directory: ${{ inputs.manifests }}
-          fail-on-missing-variables: "false"
+          fail_on_missing_variables: false
           search_input: |
             {
               "patterns": [".+.yaml", ".+.yml"],
