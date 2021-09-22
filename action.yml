@@ -13,6 +13,8 @@ inputs:
   repository:
     description: 'Digital Ocean Repository'
     required: true
+  tag:
+    description: 'Tag to use'
 runs:
   using: "composite"
   steps:
@@ -27,7 +29,7 @@ runs:
       - name: Prepare manifests
         uses: Slidem/inplace-envsubst-action@v1.2.2
         env:
-          IMAGE: registry.digitalocean.com/${{ inputs.repository }}:${{ steps.short-sha.outputs.sha }}
+          IMAGE: registry.digitalocean.com/${{ inputs.repository }}:${{ inputs.tag || steps.short-sha.outputs.sha }}
         with:
           working-directory: ${{ inputs.manifests }}
           fail_on_missing_variables: false
