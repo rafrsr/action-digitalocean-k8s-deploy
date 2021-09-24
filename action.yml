@@ -18,13 +18,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - uses: action-digitalocean-k8s-manifests-update@main
+      - uses: rafrsr/action-digitalocean-k8s-manifests-update@main
         with:
           manifests: ${{ inputs.manifests }}
           repository: ${{ inputs.repository }}
           tag: ${{ inputs.tag }}
 
-      - uses: action-digitalocean-k8s-kubectl@main
+      - uses: rafrsr/action-digitalocean-k8s-kubectl@main
         with:
           kubectl: apply -f $GITHUB_WORKSPACE/${{ inputs.manifests }}
           cluster: ${{ inputs.cluster }}
