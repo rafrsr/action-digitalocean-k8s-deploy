@@ -26,6 +26,6 @@ runs:
 
       - uses: action-digitalocean-k8s-kubectl@main
         with:
-          kubectl: apply -R -f $GITHUB_WORKSPACE/${{ inputs.manifests }}
+          kubectl: apply -f $GITHUB_WORKSPACE/${{ inputs.manifests }}
           cluster: ${{ inputs.cluster }}
           accessToken: ${{ inputs.accessToken }}
